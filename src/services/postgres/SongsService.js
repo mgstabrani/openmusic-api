@@ -30,11 +30,38 @@ class SongsService {
     return result.rows[0].id;
   }
 
-  async getSongs() {
-    const query = {
+  async getSongs(title, performer) {
+    let query = {
       text: `SELECT songs.* FROM songs
         GROUP BY songs.id`,
     };
+
+    if (title) {
+      query = {
+        text: `SELECT songs.*
+    FROM songs
+    WHERE LOWER(songs.title) LIKE $1`,
+        values: [`%${title.toLowerCase()}%`],
+      };
+    }
+
+    if (performer) {
+      query = {
+        text: `SELECT songs.*
+    FROM songs
+    WHERE LOWER(songs.performer) LIKE $1`,
+        values: [`%${performer.toLowerCase()}%`],
+      };
+    }
+
+    if (title && performer) {
+      query = {
+        text: `SELECT songs.*
+    FROM songs
+    WHERE LOWER(songs.title) LIKE $1 AND LOWER(songs.performer) LIKE $2`,
+        values: [`%${title.toLowerCase()}%`, `%${performer.toLowerCase()}%`],
+      };
+    }
 
     const result = await this.pool.query(query);
     const mappedResult = result.rows.map(mapSongDBToModel);
