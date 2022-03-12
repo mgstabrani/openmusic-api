@@ -1,0 +1,35 @@
+{
+  "name": "openmusic-api",
+  "version": "1.0.0",
+  "description": "## Kriteria OpenMusic API versi 1 ### Kriteria 1: Pengelolaan Data Album <img src=\"https://dicoding-web-img.sgp1.cdn.digitaloceanspaces.com/original/academy/dos:b285d8d8f11c5d2f72d5ab51df9376e820211215133446.png\"> <br> *any: merupakan nilai string apa pun selama tidak kosong.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "lint": "eslint ./",
+    "migrate": "node-pg-migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgstabrani/openmusic-api.git"
+  },
+  "author": "Mgs. Tabrani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgstabrani/openmusic-api/issues"
+  },
+  "homepage": "https://github.com/mgstabrani/openmusic-api#readme",
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^20.2.1",
+    "dotenv": "^16.0.0",
+    "joi": "^17.6.0",
+    "nanoid": "^3.3.1",
+    "node-pg-migrate": "^6.2.1",
+    "pg": "^8.7.3"
+  }
+}
