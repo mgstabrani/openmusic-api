@@ -30,6 +30,18 @@ class AlbumsService {
     return result.rows[0].id;
   }
 
+  async getAlbums() {
+    const query = {
+      text: `SELECT albums.* FROM albums
+        GROUP BY albums.id`,
+    };
+
+    const result = await this.pool.query(query);
+    const mappedResult = result.rows.map(mapAlbumDBToModel);
+
+    return mappedResult;
+  }
+
   async getAlbumById(id) {
     const query = {
       text: `SELECT albums.*
@@ -37,12 +49,22 @@ class AlbumsService {
     WHERE albums.id = $1`,
       values: [id],
     };
+
+    const songsQuery = {
+      text: `SELECT songs.*
+      FROM songs
+      WHERE songs.album_id = $1`,
+      values: [id],
+    };
+
     const result = await this.pool.query(query);
+    const songs = await this.pool.query(songsQuery);
 
     if (!result.rows.length) {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
+    result.rows[0].songs = songs.rows;
     return result.rows.map(mapAlbumDBToModel)[0];
   }
 
