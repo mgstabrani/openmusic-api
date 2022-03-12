@@ -62,3 +62,41 @@ Wajib menerapkan proses Data Validation pada Request Payload sesuai spesifikasi 
     - <b>PGHOST</b> : menyimpan nilai host yang digunakan oleh database.
     - <b>PGPORT</b> :  menyimpan nilai port yang digunakan oleh database.
 - Wajib menggunakan package dotenv serta berkas [.env](https://www.npmjs.com/package/dotenv) dalam mengelola environment variable.
+
+## Kriteria Opsional OpenMusic API versi 1
+### Kriteria 1: Memunculkan daftar lagu di dalam detail album
+API harus memunculkan daftar lagu di dalam album pada endpoint `GET /albums/{albumId}`.
+```
+{
+  "status": "success",
+  "data": {
+    "album": {
+      "id": "album-Mk8AnmCp210PwT6B",
+      "name": "Viva la Vida",
+      "year": 2008,
+      "songs": [
+        {
+          "id": "song-Qbax5Oy7L8WKf74l",
+          "title": "Life in Technicolor",
+          "performer": "Coldplay"
+        },
+        {
+          "id": "song-poax5Oy7L8WKllqw",
+          "title": "Centimeteries of London",
+          "performer": "Coldplay"
+        },
+        {
+          "id": "song-Qalokam7L8WKf74l",
+          "title": "Lost!",
+          "performer": "Coldplay"
+        }
+      ]
+    }
+  }
+}
+```
+
+### Kriteria 2: Query Parameter untuk Pencarian Lagu
+Menerapkan query parameter pada endpoint GET /songs untuk fitur pencarian lagu.
+- `?title`: mencari lagu berdasarkan judul lagu.
+- `?performer`: mencari lagu berdasarkan performer.
