@@ -12,12 +12,12 @@ class SongsHandler {
     this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
   }
 
-  async postSongHandler(request, h) {
+  async postSongHandler({ payload }, h) {
     try {
-      this.validator.validateSongPayload(request.payload);
+      this.validator.validateSongPayload(payload);
       const {
         title, year, genre, performer, duration, albumId,
-      } = request.payload;
+      } = payload;
 
       const songId = await this.service.addSong({
         title, year, genre, performer, duration, albumId,
