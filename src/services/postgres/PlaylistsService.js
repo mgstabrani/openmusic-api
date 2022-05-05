@@ -3,11 +3,11 @@ const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
-const { mapPlaylistDBToModel } = require('../../utils');
 
 class PlaylistsService {
-  constructor() {
+  constructor(collaborationsService) {
     this.pool = new Pool();
+    this.collaborationsService = collaborationsService;
   }
 
   async addPlaylist({
@@ -47,21 +47,20 @@ class PlaylistsService {
 
   async getPlaylists(owner) {
     const query = {
-      text: `SELECT playlists.* FROM playlists
-        WHERE playlists.owner = $1
-        GROUP BY playlists.id`,
+      text: `SELECT playlists.id, playlists.name, users.username
+      FROM users, playlists
+      WHERE playlists.owner = $1 AND users.id = playlists.owner`,
       values: [owner],
     };
 
     const result = await this.pool.query(query);
-    const mappedResult = result.rows.map(mapPlaylistDBToModel);
 
-    return mappedResult;
+    return result.rows;
   }
 
   async getPlaylistById(id) {
     const query = {
-      text: `SELECT playlists.*, users.username
+      text: `SELECT playlists.id, playlists.name, users.username
     FROM playlists
     LEFT JOIN users ON users.id = playlists.owner
     WHERE playlists.id = $1`,
@@ -73,7 +72,7 @@ class PlaylistsService {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
 
-    return result.rows.map(mapPlaylistDBToModel)[0];
+    return result.rows[0];
   }
 
   async getPlaylistSongs(playlistId) {
@@ -134,6 +133,12 @@ class PlaylistsService {
       await this.verifyPlaylistOwner(playlistId, userId);
     } catch (error) {
       if (error instanceof NotFoundError) {
+        throw error;
+      }
+
+      try {
+        await this.collaborationsService.verifyCollaborator(playlistId, userId);
+      } catch {
         throw error;
       }
     }

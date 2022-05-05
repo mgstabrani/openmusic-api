@@ -37,14 +37,4 @@ const mapSongDBToModel = ({
   updatedAt: updated_at,
 });
 
-const mapPlaylistDBToModel = ({
-  id,
-  name,
-  owner,
-}) => ({
-  id,
-  name,
-  username: owner,
-});
-
-module.exports = { mapAlbumDBToModel, mapSongDBToModel, mapPlaylistDBToModel };
+module.exports = { mapAlbumDBToModel, mapSongDBToModel };
