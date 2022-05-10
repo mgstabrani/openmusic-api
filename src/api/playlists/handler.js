@@ -49,7 +49,6 @@ class PlaylistsHandler {
         message: 'Maaf, terjadi kegagalan pada server kami.',
       });
       response.code(500);
-      console.log(error);
       return response;
     }
   }
@@ -89,7 +88,6 @@ class PlaylistsHandler {
         message: 'Maaf, terjadi kegagalan pada server kami.',
       });
       response.code(500);
-      console.log(error);
       return response;
     }
   }
@@ -135,7 +133,6 @@ class PlaylistsHandler {
         message: 'Maaf, terjadi kegagalan pada server kami.',
       });
       response.code(500);
-      console.log(error);
 
       return response;
     }
@@ -205,7 +202,6 @@ class PlaylistsHandler {
       });
       response.code(500);
 
-      console.log(error);
       return response;
     }
   }
