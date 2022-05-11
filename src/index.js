@@ -50,6 +50,9 @@ const UploadsValidator = require('./validator/uploads');
 const albumLikes = require('./api/album-likes');
 const AlbumLikesService = require('./services/postgres/AlbumLikesService');
 
+// redis
+const CacheService = require('./services/redis/CacheService');
+
 const init = async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
@@ -58,7 +61,8 @@ const init = async () => {
   const collaborationsService = new CollaborationsService(usersService);
   const playlistsService = new PlaylistsService(collaborationsService);
   const storageService = new StorageService(path.resolve(__dirname, 'api/uploads/file/images'));
-  const albumLikesService = new AlbumLikesService();
+  const cacheService = new CacheService();
+  const albumLikesService = new AlbumLikesService(cacheService);
 
   const server = Hapi.server({
     port: process.env.PORT || 3000,
