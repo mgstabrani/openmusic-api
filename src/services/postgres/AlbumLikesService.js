@@ -3,8 +3,9 @@ const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class AlbumLikesService {
-  constructor() {
+  constructor(cacheService) {
     this.pool = new Pool();
+    this.cacheService = cacheService;
   }
 
   async addAlbumLikes(userId, albumId) {
@@ -20,6 +21,8 @@ class AlbumLikesService {
       throw new InvariantError('Gagal menambahkan like');
     }
 
+    await this.cacheService.delete(`album_likes:${albumId}`);
+
     return result.rows[0].id;
   }
 
@@ -34,6 +37,8 @@ class AlbumLikesService {
     if (!result.rows.length) {
       throw new InvariantError('Gagal membatalkan like');
     }
+
+    await this.cacheService.delete(`album_likes:${albumId}`);
   }
 
   async checkAlreadyLike(userId, albumId) {
@@ -48,19 +53,29 @@ class AlbumLikesService {
   }
 
   async getLikesCount(albumId) {
-    const query = {
-      text: 'SELECT * FROM user_album_likes WHERE "album_id" = $1',
-      values: [albumId],
-    };
+    try {
+      const result = await this.cacheService.get(`album_likes:${albumId}`);
+      return {
+        count: JSON.parse(result),
+        source: 'cache',
+      };
+    } catch (error) {
+      const query = {
+        text: 'SELECT * FROM user_album_likes WHERE "album_id" = $1',
+        values: [albumId],
+      };
 
-    const result = await this.pool.query(query);
-    if (!result.rows.length) {
-      throw new InvariantError('Album tidak mempunyai like');
+      const result = await this.pool.query(query);
+      if (!result.rows.length) {
+        throw new InvariantError('Album tidak mempunyai like');
+      }
+
+      await this.cacheService.set(`album_likes:${albumId}`, JSON.stringify(result.rows.length));
+
+      return {
+        count: result.rows.length,
+      };
     }
-
-    return {
-      count: result.rows.length,
-    };
   }
 }
 module.exports = AlbumLikesService;

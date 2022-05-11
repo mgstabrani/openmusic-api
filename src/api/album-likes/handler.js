@@ -68,6 +68,7 @@ class AlbumLikesHandler {
           likes,
         },
       });
+      response.header('X-Data-Source', data.source);
       response.code(200);
       return response;
     } catch (error) {
