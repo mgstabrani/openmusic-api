@@ -153,6 +153,7 @@ const init = async () => {
       plugin: exportsAPI,
       options: {
         service: ProducerService,
+        playlistsService,
         validator: ExportsValidator,
       },
     },
