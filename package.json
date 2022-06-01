@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "lint": "eslint ./",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
